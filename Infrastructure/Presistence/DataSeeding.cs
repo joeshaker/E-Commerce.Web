@@ -67,7 +67,7 @@ namespace Presistence
 
             }
             catch (Exception ex) { 
-                //////
+                Console.WriteLine(ex.ToString());
             }
         }
     }
