@@ -3,12 +3,15 @@ using DomainLayer.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Presistence;
 using Presistence.Data;
+using Presistence.Repositories;
+using Service;
+using ServiceAbstraction;
 
 namespace E_Commerce.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -22,12 +25,15 @@ namespace E_Commerce.Web
             Options.UseSqlServer(builder.Configuration.GetConnectionString("DeafultConnection"))
             );
             builder.Services.AddScoped<IDataSeeding, DataSeeding>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddAutoMapper(typeof(Service.AssemblyReferences).Assembly);
+            builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
             var app = builder.Build();
 
             using var Scope = app.Services.CreateScope();
             var ObjextOfDataSeeding= Scope.ServiceProvider.GetRequiredService<IDataSeeding>();
-            ObjextOfDataSeeding.DataSeed();
+            await ObjextOfDataSeeding.DataSeedAsync();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -37,6 +43,7 @@ namespace E_Commerce.Web
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 
