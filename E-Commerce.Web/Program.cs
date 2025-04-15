@@ -8,7 +8,7 @@ namespace E_Commerce.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +27,7 @@ namespace E_Commerce.Web
 
             using var Scope = app.Services.CreateScope();
             var ObjextOfDataSeeding= Scope.ServiceProvider.GetRequiredService<IDataSeeding>();
-            ObjextOfDataSeeding.DataSeed();
+            await ObjextOfDataSeeding.DataSeedAsync();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
