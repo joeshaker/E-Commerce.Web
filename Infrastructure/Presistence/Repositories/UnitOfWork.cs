@@ -10,7 +10,7 @@ namespace Presistence.Repositories
 {
     public class UnitOfWork(StoreDbContext _dbContext) : IUnitOfWork
     {
-        private readonly Dictionary<string,object> repositories = new Dictionary<string,object>();
+        private readonly Dictionary<string,object> repositories = [];
         IGenericRepository<TEntity, TKey> IUnitOfWork.GetRepository<TEntity, TKey>()
         {
             var typeName= typeof(TEntity).Name;
@@ -22,9 +22,11 @@ namespace Presistence.Repositories
             {
                 var Repo= new GenericRepository<TEntity, TKey>(_dbContext);
                 //repositories.Add(typeName, Repo);
-                repositories["typeName"]=Repo;
+                repositories["typeName"] =Repo;
                 return Repo;
+
             }
+
         }
 
         async Task<int> IUnitOfWork.SaveChangesAsync()
