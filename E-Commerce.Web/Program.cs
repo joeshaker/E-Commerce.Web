@@ -24,6 +24,7 @@ namespace E_Commerce.Web
             );
             builder.Services.AddScoped<IDataSeeding, DataSeeding>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddAutoMapper(typeof(Service.AssemblyReferences).Assembly);
 
             var app = builder.Build();
 
