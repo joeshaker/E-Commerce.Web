@@ -20,10 +20,25 @@ namespace Presistence.Repositories
         public async Task<IEnumerable<TEntity>> GetAllAsync()=>
             await _dbContext.Set<TEntity>().ToListAsync();
 
+
+
         public async Task<TEntity?>GetByIdAsync(TKey id)
         {
            return await _dbContext.Set<TEntity>().FindAsync(id);
         }
+
+        #region Specifications
+        public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecifications<TEntity, TKey> specifications)
+        {
+            return await SpecificationsEvaluator.CreateQuery(_dbContext.Set<TEntity>(), specifications).ToListAsync();
+        }
+
+        public async Task<TEntity?> GetByIdAsync(ISpecifications<TEntity, TKey> specifications)
+        {
+            return await SpecificationsEvaluator.CreateQuery(_dbContext.Set<TEntity>(), specifications).FirstOrDefaultAsync();
+
+        }
+        #endregion
 
         public void Remove(TEntity entity)
         {
@@ -33,6 +48,11 @@ namespace Presistence.Repositories
         public void Update(TEntity entity)
         {
             _dbContext.Set<TEntity>().Update(entity);
+        }
+
+        public async Task<int> CountAsync(ISpecifications<TEntity, TKey> specifications)
+        {
+            return await SpecificationsEvaluator.CreateQuery(_dbContext.Set<TEntity>(),specifications).CountAsync();
         }
     }
 }
