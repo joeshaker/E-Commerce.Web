@@ -24,13 +24,18 @@ namespace Presistence
                 Query = Query.OrderBy(specifications.OrderBy);
 
             if (specifications.OrderByDesc is not null)
-
                 Query = Query.OrderByDescending(specifications.OrderByDesc);
 
             if (specifications.IncludeExpressions is not null && specifications.IncludeExpressions.Count > 0)
             {
                 Query = specifications.IncludeExpressions.Aggregate(Query, (CurrentQuery, IncExp) => CurrentQuery.Include(IncExp));
             }
+
+            if (specifications.IsPaginated)
+            {
+                Query = Query.Skip(specifications.Skip).Take(specifications.Take);
+            }
+
             return Query ;
 
         }
