@@ -1,5 +1,6 @@
 
 using DomainLayer.Contracts;
+using E_Commerce.Web.CustomeExceptionMiddleWare;
 using Microsoft.EntityFrameworkCore;
 using Presistence;
 using Presistence.Data;
@@ -34,6 +35,9 @@ namespace E_Commerce.Web
             using var Scope = app.Services.CreateScope();
             var ObjextOfDataSeeding= Scope.ServiceProvider.GetRequiredService<IDataSeeding>();
             await ObjextOfDataSeeding.DataSeedAsync();
+
+
+            app.UseMiddleware<CustomeExceptionHandlerMiddleWare>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
