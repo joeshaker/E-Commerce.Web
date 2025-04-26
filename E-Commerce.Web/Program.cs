@@ -1,12 +1,15 @@
 
 using DomainLayer.Contracts;
 using E_Commerce.Web.CustomeExceptionMiddleWare;
+using E_Commerce.Web.Factories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Presistence;
 using Presistence.Data;
 using Presistence.Repositories;
 using Service;
 using ServiceAbstraction;
+using Shared.ErrorModels;
 
 namespace E_Commerce.Web
 {
@@ -29,6 +32,11 @@ namespace E_Commerce.Web
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddAutoMapper(typeof(Service.AssemblyReferences).Assembly);
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory=ApiResponseFactory.GenerateApiResponseValidationError;
+
+            });
 
             var app = builder.Build();
 
