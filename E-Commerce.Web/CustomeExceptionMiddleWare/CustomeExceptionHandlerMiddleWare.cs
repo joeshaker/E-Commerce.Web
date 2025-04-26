@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using DomainLayer.Execptions;
 using Shared.ErrorModels;
 
 namespace E_Commerce.Web.CustomeExceptionMiddleWare
@@ -25,7 +26,11 @@ namespace E_Commerce.Web.CustomeExceptionMiddleWare
                 _logger.LogError(ex, "An error occurred while processing the request.");
 
                 //httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                httpContext.Response.StatusCode=StatusCodes.Status500InternalServerError;
+                httpContext.Response.StatusCode=ex switch 
+                {
+                    NotFoundException _ => StatusCodes.Status404NotFound,
+                    _ => StatusCodes.Status500InternalServerError,
+                };
                 httpContext.Response.ContentType = "application/json";
 
                 var errorResponse = new ErrorToReturn
