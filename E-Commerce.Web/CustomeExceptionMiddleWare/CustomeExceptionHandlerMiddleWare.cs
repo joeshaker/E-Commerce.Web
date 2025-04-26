@@ -20,26 +20,46 @@ namespace E_Commerce.Web.CustomeExceptionMiddleWare
             try
             {
                 await _next.Invoke(httpContext);
+                await HandelNotFoundEndPointAsync(httpContext);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while processing the request.");
 
                 //httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                httpContext.Response.StatusCode=ex switch 
-                {
-                    NotFoundException _ => StatusCodes.Status404NotFound,
-                    _ => StatusCodes.Status500InternalServerError,
-                };
-                httpContext.Response.ContentType = "application/json";
+                await HandleExceptionsAsync(httpContext, ex);
+            }
+        }
 
-                var errorResponse = new ErrorToReturn
+        private static async Task HandleExceptionsAsync(HttpContext httpContext, Exception ex)
+        {
+            httpContext.Response.StatusCode = ex switch
+            {
+                NotFoundException _ => StatusCodes.Status404NotFound,
+                _ => StatusCodes.Status500InternalServerError,
+            };
+            httpContext.Response.ContentType = "application/json";
+
+            var errorResponse = new ErrorToReturn
+            {
+                StatusCode = httpContext.Response.StatusCode,
+                ErrorMessage = ex.Message
+            };
+
+            await httpContext.Response.WriteAsJsonAsync(errorResponse);
+        }
+
+        private static async Task HandelNotFoundEndPointAsync(HttpContext httpContext)
+        {
+            if (httpContext.Response.StatusCode == StatusCodes.Status404NotFound)
+            {
+                var Error = new ErrorToReturn
                 {
                     StatusCode = httpContext.Response.StatusCode,
-                    ErrorMessage = ex.Message
+                    ErrorMessage = $"End Point {httpContext.Request.Path} is not found"
                 };
 
-                await httpContext.Response.WriteAsJsonAsync(errorResponse);
+                await httpContext.Response.WriteAsJsonAsync(Error);
             }
         }
     }
