@@ -1,11 +1,16 @@
 
 using DomainLayer.Contracts;
+using E_Commerce.Web.CustomeExceptionMiddleWare;
+using E_Commerce.Web.Extensions;
+using E_Commerce.Web.Factories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Presistence;
 using Presistence.Data;
 using Presistence.Repositories;
 using Service;
 using ServiceAbstraction;
+using Shared.ErrorModels;
 
 namespace E_Commerce.Web
 {
@@ -19,27 +24,24 @@ namespace E_Commerce.Web
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-            builder.Services.AddDbContext<StoreDbContext>(Options =>
-            Options.UseSqlServer(builder.Configuration.GetConnectionString("DeafultConnection"))
-            );
-            builder.Services.AddScoped<IDataSeeding, DataSeeding>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddAutoMapper(typeof(Service.AssemblyReferences).Assembly);
-            builder.Services.AddScoped<IServiceManager, ServiceManager>();
+
+            builder.Services.AddSwaggerServices();
+            builder.Services.AddInfrastractureServices(builder.Configuration);
+
+            builder.Services.AddApplicationService();
+
+            builder.Services.AddWebApplicationServices();
 
             var app = builder.Build();
 
-            using var Scope = app.Services.CreateScope();
-            var ObjextOfDataSeeding= Scope.ServiceProvider.GetRequiredService<IDataSeeding>();
-            await ObjextOfDataSeeding.DataSeedAsync();
+            await app.SeedDatabaseAsync();
 
+
+            app.UseCustomeExceptionMiddleWare();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerMiddleWares();
             }
 
             app.UseHttpsRedirection();

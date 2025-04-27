@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DomainLayer.Models
+namespace Shared.DataTransferObject.ProductModuleDto
 {
-    public class ProductType:BaseEntity<int>
+    public class TypesDto
     {
+        public int Id { get; set; }
         public string Name { get; set; } = default!;
     }
 }
