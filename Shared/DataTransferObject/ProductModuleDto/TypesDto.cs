@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.DataTransferObject
+namespace Shared.DataTransferObject.ProductModuleDto
 {
     public class TypesDto
     {
-        public  int Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; } = default!;
     }
 }
