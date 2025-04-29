@@ -7,11 +7,12 @@ using AutoMapper;
 using DomainLayer.Contracts;
 using DomainLayer.Models.IdentityModule;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using ServiceAbstraction;
 
 namespace Service
 {
-    public class ServiceManager(IUnitOfWork unitOfWork ,IMapper mapper,IBasketRepository basketRepository,UserManager<ApplicationUser> userManager ) : IServiceManager
+    public class ServiceManager(IUnitOfWork unitOfWork ,IMapper mapper,IBasketRepository basketRepository,UserManager<ApplicationUser> userManager ,IConfiguration configuration) : IServiceManager
     {
         private readonly Lazy<IProductService> _LazyProductService = new Lazy<IProductService>(() =>
         new ProductService(unitOfWork,mapper));
@@ -23,7 +24,7 @@ namespace Service
         public IBasketService BasketService => _LazyBasketService.Value;
 
         private readonly Lazy<IAuthenticationService> _LazyAuthenticationService = new Lazy<IAuthenticationService>(() =>
-        new AuthenticationService(userManager));
+        new AuthenticationService(userManager, configuration));
 
         public IAuthenticationService AuthenticationService => _LazyAuthenticationService.Value;
     }
