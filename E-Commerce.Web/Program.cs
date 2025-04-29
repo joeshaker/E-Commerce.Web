@@ -31,6 +31,7 @@ namespace E_Commerce.Web
             builder.Services.AddApplicationService();
 
             builder.Services.AddWebApplicationServices();
+            builder.Services.AddJWTService(builder.Configuration);
 
             var app = builder.Build();
 
@@ -46,7 +47,8 @@ namespace E_Commerce.Web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
