@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DomainLayer.Contracts;
+using DomainLayer.Models.IdentityModule;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -31,8 +33,10 @@ namespace Presistence
 
             });
             Services.AddDbContext<StoreIdentityDbContext>(Options =>
-                Options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection"))
-);
+                Options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection")));
+            Services.AddIdentityCore<ApplicationUser>().
+                AddRoles<IdentityRole>().
+                AddEntityFrameworkStores<StoreIdentityDbContext>();
             return Services;
         }
 
