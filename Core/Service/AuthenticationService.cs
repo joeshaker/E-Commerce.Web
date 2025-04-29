@@ -51,24 +51,36 @@ namespace Service
         {
             var User = await _userManager.Users.Include(U => U.Address).
                                          FirstOrDefaultAsync(U => U.Email == email) ?? throw new UserNotFoundException(email);
-            if (User.Address == null)
-            {
-                User.Address = new Address
-                {
-                    FistName = address.FirstName,
-                    LastName = address.LastName,
-                    Street = address.Street,
-                    City = address.City,
-                    Country = address.Country,
-                };
-            }
-            else
+            //if (User.Address == null)
+            //{
+            //    User.Address = new Address
+            //    {
+            //        FistName = address.FirstName,
+            //        LastName = address.LastName,
+            //        Street = address.Street,
+            //        City = address.City,
+            //        Country = address.Country,
+            //    };
+            //}
+            //else
+            //{
+            //    User.Address.FistName = address.FirstName;
+            //    User.Address.LastName = address.LastName;
+            //    User.Address.Street = address.Street;
+            //    User.Address.City = address.City;
+            //    User.Address.Country = address.Country;
+            //}
+            if (User.Address is not null)
             {
                 User.Address.FistName = address.FirstName;
                 User.Address.LastName = address.LastName;
                 User.Address.Street = address.Street;
                 User.Address.City = address.City;
                 User.Address.Country = address.Country;
+            }
+            else
+            {
+                User.Address = _mapper.Map<AddressDto, Address>(address);
             }
             await _userManager.UpdateAsync(User);
             return _mapper.Map<AddressDto>(User.Address);
