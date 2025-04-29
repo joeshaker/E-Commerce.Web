@@ -27,6 +27,7 @@ namespace E_Commerce.Web.CustomeExceptionMiddleWare
                 _logger.LogError(ex, "An error occurred while processing the request.");
 
                 //httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                /////////////////////////////////////////////
                 await HandleExceptionsAsync(httpContext, ex);
             }
         }
