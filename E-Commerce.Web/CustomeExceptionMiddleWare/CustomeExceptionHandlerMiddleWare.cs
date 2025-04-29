@@ -35,10 +35,9 @@ namespace E_Commerce.Web.CustomeExceptionMiddleWare
         {
             var errorResponse = new ErrorToReturn
             {
-                StatusCode = httpContext.Response.StatusCode,
                 ErrorMessage = ex.Message
             };
-            httpContext.Response.StatusCode = ex switch
+            errorResponse.StatusCode = ex switch
             {
                 NotFoundException _ => StatusCodes.Status404NotFound,
                 UnauthorizedException _ => StatusCodes.Status401Unauthorized,
@@ -49,7 +48,7 @@ namespace E_Commerce.Web.CustomeExceptionMiddleWare
             httpContext.Response.ContentType = "application/json";
 
 
-
+            httpContext.Response.StatusCode = errorResponse.StatusCode;
             await httpContext.Response.WriteAsJsonAsync(errorResponse);
         }
 

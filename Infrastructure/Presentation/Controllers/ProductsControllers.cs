@@ -10,9 +10,8 @@ using Shared.DataTransferObject.ProductModuleDto;
 
 namespace Presentation.Controllers
 {
-    [ApiController]
-    [Route("api/[Controller]")]
-    public class ProductsController(IServiceManager _serviceManager):ControllerBase
+
+    public class ProductsController(IServiceManager _serviceManager):ApiBaseController
     {
         [HttpGet]
         public async Task<ActionResult<PaginatedResult<ProductDto>>> GetAllProducts([FromQuery]ProductQueryParams queryParams)
