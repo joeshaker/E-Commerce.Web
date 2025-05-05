@@ -12,8 +12,10 @@ namespace Service.MappingProfiles
     public class AddressProfile:Profile
     {
         public AddressProfile() {
-            CreateMap<Address,AddressDto>().ReverseMap()
-                .ForMember(A=>A.FistName,Option=>Option.MapFrom(src=>src.FirstName));
+            CreateMap<Address,AddressDto>()
+                .ForMember(A=>A.FirstName,Option=>Option.MapFrom(src=>src.FistName));
+            CreateMap<AddressDto,Address>()
+                .ForMember(A => A.FistName, Option => Option.MapFrom(src => src.FirstName));
         }
     }
 }
